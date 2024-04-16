@@ -1,10 +1,8 @@
-import replicate
 import os
-import requests
 import time
-from providers.abstract_providers.base_provider import BaseProvider
-import asyncio
+import replicate
 from dotenv import load_dotenv
+from providers.abstract_providers.base_provider import BaseProvider
 
 load_dotenv()
 
@@ -37,14 +35,10 @@ class Replicate(BaseProvider):
         self, llm_name: str, prompt: str, max_tokens: int = 5
     ) -> float:
         start = time.time()
-
-        def sync_call_streaming():
-            stream = replicate.stream(
-                self.SUPPORTED_MODELS[llm_name],
-                input={"prompt": prompt, "max_new_tokens": max_tokens},
-            )
-            for event in stream:
-                if event and event.data:
-                    return time.time() - start
-
-        return await asyncio.to_thread(sync_call_streaming)
+        stream = replicate.async_stream(
+            self.SUPPORTED_MODELS[llm_name],
+            input={"prompt": prompt, "max_new_tokens": max_tokens},
+        )
+        async for event in stream:
+            if event and event.data:
+                return time.time() - start

@@ -87,7 +87,7 @@ static_data = [
             "llama2-70b-chat": {"in": 0.65, "out": 2.75},
             "mixtral-8x7b": {"in": 0.3, "out": 1.0},
         },
-        rate_limit="10 RPS",
+        rate_limit="300 RPM",
     ),
     StaticData(
         provider_name="Together",
